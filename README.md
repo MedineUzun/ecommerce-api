@@ -1,7 +1,7 @@
 # Wibesoft E-Ticaret API
 
 ## Proje Hakkında
-Bu proje, NestJS kullanılarak geliştirilmiş bir e-ticaret arka uç (backend) hizmetidir. Gerçek dünyadaki bir e-ticaret platformunun ihtiyaç duyduğu temel özellikleri (kullanıcı kayıt/giriş, ürün listeleme ve yönetimi, sepet işlemleri ve sipariş oluşturma) tek bir çatı altında toplar.
+Bu proje, NestJS kullanılarak geliştirilmiş bir e-ticaret backend hizmetidir. Gerçek dünyadaki bir e-ticaret platformunun ihtiyaç duyduğu temel özellikleri (kullanıcı kayıt/giriş, ürün listeleme ve yönetimi, sepet işlemleri ve sipariş oluşturma) tek bir çatı altında toplar.
 
 
 ## Kullanılan Teknolojiler
@@ -12,38 +12,74 @@ Bu proje, NestJS kullanılarak geliştirilmiş bir e-ticaret arka uç (backend) 
 - **API Dokümantasyonu**: Swagger / OpenAPI
 - **Veri Doğrulama (Validation)**: class-validator & class-transformer
 
-##  Kurulum ve Çalıştırma
+## Kurulum ve Çalıştırma
 
-### 1. Projeyi İndirin
-Projeyi bilgisayarınıza klonlayın ve klasörün içine girin:
+Bu projeyi kendi bilgisayarınızda (lokalinizde) çalıştırmak için aşağıdaki adımları sırasıyla takip edin:
+
+### 1. Projeyi Bilgisayarınıza İndirin
+
+Projeyi indirmek için iki farklı yöntem kullanabilirsiniz:
+
+**Git Kullanarak**
+Eğer bilgisayarınızda Git yüklüyse, terminalinizi (veya komut satırınızı) açın ve şu komutu çalıştırarak projeyi klonlayın:
 ```bash
-git clone <repository-url>
+git clone https://github.com/MedineUzun/ecommerce-api.git
+```
+
+
+**ZIP Olarak İndirip Çıkartarak**
+Eğer Git kullanmıyorsanız:
+1. Projenin bulunduğu GitHub sayfasında sağ üstteki yeşil renkli **"Code"** butonuna tıklayın.
+2. Açılan menüden **"Download ZIP"** seçeneğine tıklayın.
+3. İnen ZIP dosyasını bilgisayarınızda çalışmak istediğiniz bir klasöre çıkartın.
+
+Hangi yöntemi seçerseniz seçin, projenin kaynak kodlarının bulunduğu klasörün içine (ana dizine) girmek için terminalde şu komutu çalıştırın:
+```bash
 cd wibesoft
 ```
 
 ### 2. Gerekli Paketleri Yükleyin
-Node.js bağımlılıklarını kurmak için:
+Projenin ihtiyaç duyduğu Node.js kütüphanelerini kurmak için terminalinizde projeyi indirdiğiniz dizindeyken şu komutu çalıştırın:
 ```bash
 npm install
 ```
 
-### 3. Çevre Değişkenleri (Environment) Ayarları
-Projenin çalışması için veritabanı şifreleri gibi bilgilerin girilmesi gerekir. `.env.example` dosyasının bir kopyasını oluşturup adını `.env` yapın:
-```bash
-cp .env.example .env
-```
-Ardından bu dosyanın içine girip kendi `MONGODB_URI` adresinizi (Örn: MongoDB Atlas bağlantınız) ve bir `JWT_SECRET` (rastgele şifreleme anahtarı) bilginizi ekleyin.
+
+### 3. Çevre Değişkenlerini Ayarlayın
+Projenin veritabanına bağlanabilmesi ve güvenliği sağlayabilmesi için bazı özel ayarlar yapılmalıdır.
+
+1. Proje klasörünüzün içinde `.env.example` isimli bir dosya göreceksiniz. Bu dosyanın bir kopyasını aynı yere çıkarın ve adını **`.env`** (başında nokta olacak şekilde) yapın.
+
+2. Oluşturduğunuz `.env` dosyasını Not Defteri veya VS Code gibi bir kod editörüyle açarak kendi bilgilerinizi girin:
+
+**`MONGODB_URI` - MongoDB Bağlantısı Nasıl Kopyalanır?**
+- **Bulut Veritabanı (MongoDB Atlas) Kullanıyorsanız:**
+  1. [mongodb.com](https://www.mongodb.com/) adresinden hesabınıza giriş yapın / projenizi kurun.
+  2. Panelde **"Database"** veya **"Clusters"** bölümünden **"Connect"** (Bağlan) butonuna tıklayın.
+  3. Çıkan ekranda **"Drivers"** (veya uygulamanızı bağlama) seçeneğini seçin.
+  4. Alt kısımda size verilen bağlantı cümlesini kopyalayın. Şöyle görünmelidir: 
+     `mongodb+srv://KULLANICI_ADINIZ:SIFRENIZ@cluster0.abcde.mongodb.net/wibesoft?retryWrites=true&w=majority`
+  5. Kopyaladığınız bu metni `env` dosyasında `MONGODB_URI=` eşittir işaretinden hemen sonraya yapıştırın. *Linkte `<password>` yazan yeri silip kendi veritabanı şifrenizi eklemeyi unutmayın!*
+     > **Önemli Not:** Bağlantı linkindeki `wibesoft` kelimesi projenin adı değil, kurulacak olan **veritabanının ismidir**. Eğer veritabanınıza farklı bir isim verecekseniz, bağlantı adresindeki `wibesoft` kısmını veritabanı isminizle değiştirmelisiniz.
+- **Kendi Bilgisayarınıza Kurulu MongoDB Kullanıyorsanız:**
+  Bağlantı adresi genel olarak şu şekildedir:
+  `MONGODB_URI=mongodb://127.0.0.1:27017/wibesoft`
+  > **Önemli Not:** Buradaki `wibesoft` kısmı da bağlanılacak **veritabanının adını** temsil eder. Eğer kendi veritabanınızı farklı bir isimle oluşturacaksanız, bu kısmı ona göre güncelleyebilirsiniz.
+
+**`JWT_SECRET` - Şifreleme Anahtarı**
+Kullanıcı giriş işlemlerinde (token oluştururken) güvenlik için kullanılır. Buraya başkalarının tahmin edemeyeceği, tamamen rastgele karışık harf ve sayılardan oluşan bir metin yazın. 
+Örnek: `JWT_SECRET=super_gizli_projem_icin_karma_isaret!`
 
 ### 4. Uygulamayı Başlatın
-Tercihinize göre projeyi aşağıdaki komutlardan biriyle başlatabilirsiniz:
+Hazırlıkları başarıyla bitirdiyseniz, projeyi ayağa kaldırmak için terminalde aşağıdaki komutlardan birini çalıştırabilirsiniz:
 ```bash
-# Geliştirici modu (Kod değiştikçe otomatik yenilenir)
+# Geliştirici modu önerilir (Kodda bir şeyi değiştirip kaydettiğinizde proje otomatik yeniden başlar)
 npm run start:dev
 
-# Standart çalıştırma
+# Standart şekilde çalıştırmak için
 npm run start
 
-# Canlı (Production) modu
+# Canlı (Production) modunda çalıştırmak için
 npm run start:prod
 ```
 
